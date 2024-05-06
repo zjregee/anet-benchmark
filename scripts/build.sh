@@ -5,5 +5,6 @@ mkdir -p output/bin/
 mkdir -p output/log/
 
 go build -v -o output/bin/net_server ./net
+go build -v -o output/bin/anet_server ./anet
 
 go build -v -o output/bin/net_client ./net/client
