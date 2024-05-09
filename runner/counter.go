@@ -35,7 +35,7 @@ func (c *Counter) AddRecord(idx int64, err error, cost int64) {
 	}
 }
 
-func (c *Counter) Report(title string, totalns int64, concurrent int, total int64, echoSize int) {
+func (c *Counter) Report(title string, totalns int64, concurrent int, total int, echoSize int) {
 	ms, sec := int64(time.Millisecond), int64(time.Second)
 	fmt.Printf("[%s] took %d ms for %d requests\n", title, totalns / ms, c.total)
 	fmt.Printf("[%s] requests total: %d, failed: %d\n", title, c.total, c.failed)

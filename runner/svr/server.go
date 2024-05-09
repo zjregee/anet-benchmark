@@ -8,17 +8,19 @@ import (
 
 func Serve(newer runner.ServerNewer) {
 	initFlags()
-	svr := newer(network, address)
+	svr := newer(runner.Mode(mode), network, address)
 	svr.Run()
 }
 
 var (
+	mode    int
 	address string
 
 	network string = "tcp"
 )
 
 func initFlags() {
+	flag.IntVar(&mode, "mode", 2, "")
 	flag.StringVar(&address, "addr", ":8000", "")
 	flag.Parse()
 }

@@ -5,8 +5,15 @@ import (
 	"anet-benchmark/runner/svr"
 )
 
-func NewServer(network, address string) runner.Server {
-	return NewRPCServer(network, address)
+func NewServer(mode runner.Mode, network, address string) runner.Server {
+	switch mode {
+	case runner.MODE_RPC:
+		return NewRPCServer(network, address)
+	case runner.MODE_MUX:
+		return NewMuxServer(network, address)
+	default:
+		panic("illegal value here")
+	}
 }
 
 func main() {

@@ -19,11 +19,11 @@ func NewRunner() *Runner {
 	}
 }
 
-func (r *Runner) Run(title string, once EchoOnce, concurrent int, total int64, echoSize int) {
+func (r *Runner) Run(title string, once EchoOnce, total int, echosize int, concurrent int) {
 	start := r.timer.Now()
-	r.benching(once, concurrent, total, echoSize)
+	r.benching(once, total, echosize, concurrent)
 	end := r.timer.Now()
-	r.counter.Report(title, end - start, concurrent, total, echoSize)
+	r.counter.Report(title, end - start, total, echosize, concurrent)
 }
 
 func (r *Runner) echoWithTimeout(ctx context.Context, once EchoOnce, req *Message) error {
@@ -42,19 +42,19 @@ func (r *Runner) echoWithTimeout(ctx context.Context, once EchoOnce, req *Messag
 	}
 }
 
-func (r *Runner) benching(once EchoOnce, concurrent int, total int64, echoSize int) {
+func (r *Runner) benching(once EchoOnce, total int, echosize int, concurrent int) {
 	var wg sync.WaitGroup
 	wg.Add(concurrent)
-	r.counter.Reset(total)
+	r.counter.Reset(int64(total))
 	for i := 0; i < concurrent; i++ {
 		go func() {
 			defer wg.Done()
 			ctx := context.Background()
-			body := make([]byte, echoSize)
+			body := make([]byte, echosize)
 			req := &Message{Message: string(body)}
 			for {
 				idx := r.counter.Idx()
-				if idx >= total {
+				if idx >= int64(total) {
 					return
 				}
 				begin := r.timer.Now()
@@ -66,5 +66,4 @@ func (r *Runner) benching(once EchoOnce, concurrent int, total int64, echoSize i
 		}()
 	}
 	wg.Wait()
-	r.counter.total = total
 }
